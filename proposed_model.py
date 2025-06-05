@@ -19,7 +19,7 @@ MEL_BANDS = 80
 MAX_TEXT_LENGTH = 150
 MAX_MEL_LENGTH = 900
 
-# Data preparation functions (same as before)
+# Data preparation functions
 def download_ljspeech():
     data_dir = "LJSpeech-1.1"
     if not os.path.exists(data_dir):
@@ -142,7 +142,7 @@ class TTSModel(tf.keras.Model):
         outputs = tf.concat(outputs, axis=1)
         return outputs
 
-# Example usage:
+# Usage:
 VOCAB_SIZE = 1000
 EMBEDDING_DIM = 16
 ENC_UNITS = 16
