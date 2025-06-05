@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 from tqdm import tqdm
 
-# Hyperparameters (same as before)
+# Hyperparameters (Tune it for better peformance)
 EPOCHS = 50
 BATCH_SIZE = 16
 EMBEDDING_DIM = 16
@@ -21,7 +21,7 @@ MAX_MEL_LENGTH = 900
 
 # Data preparation functions (same as before)
 def download_ljspeech():
-    data_dir = "./text_to_speech/data/LJSpeech-1.1"
+    data_dir = "LJSpeech-1.1"
     if not os.path.exists(data_dir):
         raise Exception("Please download LJSpeech dataset from https://keithito.com/LJ-Speech-Dataset/")
     metadata_path = os.path.join(data_dir, "metadata.csv")
@@ -97,7 +97,7 @@ class SimpleAttention(tf.keras.layers.Layer):
         attention_weights = tf.squeeze(attention_weights, axis=1)  # (batch, time)
         return context_vector, attention_weights
 
-# Decoder using SimpleAttention
+# Decoder
 class Decoder(tf.keras.layers.Layer):
     def __init__(self, mel_dim, dec_units):
         super().__init__()
@@ -153,7 +153,7 @@ tts_model = TTSModel(VOCAB_SIZE, EMBEDDING_DIM, ENC_UNITS, DEC_UNITS, MEL_BANDS)
 tts_model.compile(optimizer='adam', loss='mse')
 
 metadata = download_ljspeech()
-file_paths, texts, mel_lengths = prepare_dataset(metadata, "./text_to_speech/data/LJSpeech-1.1", max_samples=1000)
+file_paths, texts, mel_lengths = prepare_dataset(metadata, "LJSpeech-1.1", max_samples=1000) # Adjust accordingly
 train_files, test_files, train_texts, test_texts = train_test_split(
     file_paths, texts, test_size=0.2, random_state=42
 )
@@ -174,7 +174,6 @@ def load_mels(file_list):
 train_mels = load_mels(train_files)
 test_mels = load_mels(test_files)
 
-# With this:
 text_vectorizer = create_text_vectorizer(train_texts + test_texts)  # Fit on all text data
 train_text_vec = text_vectorizer(train_texts).numpy()
 test_text_vec = text_vectorizer(test_texts).numpy()
@@ -185,7 +184,7 @@ train_y = train_mels
 test_x = (test_text_vec, test_mels)
 test_y = test_mels
 
-
+# Evaluation
 from scipy.spatial.distance import cdist
 
 def calculate_mcd(mel_true, mel_pred):
@@ -219,7 +218,8 @@ def evaluate_model(model, test_texts, test_mels, text_vectorizer):
         metrics['rmse'].append(calculate_rmse(mel_true, mel_pred))
     
     return {k: np.mean(v) for k, v in metrics.items()}
-    
+
+# Inference    
 def text_to_speech(model, text, text_vectorizer, max_length=MAX_MEL_LENGTH):
     # Vectorize text
     text_vec = text_vectorizer([text]).numpy()
@@ -250,7 +250,7 @@ history = tts_model.fit(
     epochs=100,
     callbacks=[
         tf.keras.callbacks.EarlyStopping(patience=5),
-        tf.keras.callbacks.ModelCheckpoint('./text_to_speech/best_model.keras', save_best_only=True)
+        tf.keras.callbacks.ModelCheckpoint('best_model.keras', save_best_only=True)
     ]
 )
 
@@ -266,6 +266,6 @@ audio, mel = text_to_speech(tts_model, text_to_test, text_vectorizer)
 
 # Save
 import soundfile as sf
-sf.write('./text_to_speech/generated_speech.wav', audio, 22050)
+sf.write('generated_speech.wav', audio, 22050)
 
 
