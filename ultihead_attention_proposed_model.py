@@ -69,7 +69,7 @@ class MultiHeadAttention(layers.Layer):
         return context_vector, attention_weights
 
 class Decoder(tf.keras.layers.Layer):
-    def __init__(self, mel_dim, dec_units, num_heads=2, key_dim=4):
+    def __init__(self, mel_dim, dec_units, num_heads=8, key_dim=64):
         super().__init__()
         self.lstm = tf.keras.layers.LSTM(dec_units, return_sequences=True, return_state=True)
         self.attention = MultiHeadAttention(num_heads=num_heads, key_dim=key_dim)
@@ -186,7 +186,7 @@ history = tts_model.fit(
     epochs=100,
     callbacks=[
         tf.keras.callbacks.EarlyStopping(patience=5),
-        tf.keras.callbacks.ModelCheckpoint('./text_to_speech/best_model.keras', save_best_only=True)
+        tf.keras.callbacks.ModelCheckpoint('best_mh_model.keras', save_best_only=True)
     ]
 )
 
@@ -202,6 +202,6 @@ audio, mel = text_to_speech(tts_model, text_to_test, text_vectorizer)
 
 # Save
 import soundfile as sf
-sf.write('./text_to_speech/generated_speech.wav', audio, 22050)
+sf.write('generated_speech.wav', audio, 22050)
 
 
