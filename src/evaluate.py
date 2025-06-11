@@ -24,9 +24,3 @@ def evaluate_model(model_path, test_texts, test_mels):
         metrics['rmse'].append(calculate_rmse(mel_true, mel_pred))
     
     return {k: np.mean(v) for k, v in metrics.items()}
-
-if __name__ == "__main__":
-    test_texts, test_mels = load_data()[2:]  # Load test data
-    metrics = evaluate_model('best_model.keras', test_texts, test_mels)
-    print(f"MCD: {metrics['mcd']:.4f}")
-    print(f"RMSE: {metrics['rmse']:.4f}")
