@@ -172,7 +172,7 @@ history = tts_model.fit(
     epochs=100,
     callbacks=[
         tf.keras.callbacks.EarlyStopping(patience=5),
-        tf.keras.callbacks.ModelCheckpoint('best_model.keras', save_best_only=True)
+        tf.keras.callbacks.ModelCheckpoint('./models/best_model.keras', save_best_only=True)
     ]
 )
 
