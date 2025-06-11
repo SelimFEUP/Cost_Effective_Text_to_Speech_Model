@@ -4,4 +4,4 @@ There are two proposed models: using (i) simple attention mechanism and (ii) mul
 Download and extract the LJSpeech dataset from https://keithito.com/LJ-Speech-Dataset/
 
 # Usage
-The models can be run in various ways, for an example, using 'python3 multihead_attention_proposed_model.py' from the terminal.
+The models can be run in various ways, for an example, using 'python3 main.py' from the terminal. It will run the simple attention mechanism model.
