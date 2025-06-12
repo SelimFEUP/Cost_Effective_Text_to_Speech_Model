@@ -1,6 +1,6 @@
 import tensorflow as tf
-from model import TTSModel
-from preprocessing import load_data, text_vectorizer
+from src.model import TTSModel
+from src.preprocessing import load_data
 import numpy as np
 import os
 
@@ -15,9 +15,9 @@ DECODER_LSTM_UNITS = 32
 
 def train_model():
     # Load data
-    train_texts, train_mels, test_texts, test_mels = load_data()
-    train_text_vec = text_vectorizer(train_texts).numpy()
-    test_text_vec = text_vectorizer(test_texts).numpy()
+    train_mels, test_mels, train_text_vec, test_text_vec = load_data()
+    #train_text_vec = text_vectorizer(train_texts).numpy()
+    #test_text_vec = text_vectorizer(test_texts).numpy()
 
     # Initialize model
     tts_model = TTSModel(
