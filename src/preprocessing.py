@@ -77,16 +77,15 @@ def load_mels(file_list):
             mel = mel[:MAX_MEL_LENGTH]
         mels.append(mel)
     return np.array(mels)
-
-train_mels = load_mels(train_files)
-test_mels = load_mels(test_files)
-
-text_vectorizer = create_text_vectorizer(train_texts + test_texts)  # Fit on all text data
-train_text_vec = text_vectorizer(train_texts).numpy()
-test_text_vec = text_vectorizer(test_texts).numpy()
-
-train_x = (train_text_vec, train_mels)
-train_y = train_mels
-
-test_x = (test_text_vec, test_mels)
-test_y = test_mels
+    
+def load_data():
+    train_mels = load_mels(train_files)
+    test_mels = load_mels(test_files)
+    text_vectorizer = create_text_vectorizer(train_texts + test_texts)  # Fit on all text data
+    train_text_vec = text_vectorizer(train_texts).numpy()
+    test_text_vec = text_vectorizer(test_texts).numpy()
+    #train_x = (train_text_vec, train_mels)
+    #train_y = train_mels
+    #test_x = (test_text_vec, test_mels)
+    #test_y = test_mels
+    return train_mels, test_mels, train_text_vec, test_text_vec
