@@ -1,35 +1,26 @@
 import sys
 import os
+import tensorflow as tf
+from tensorflow.keras import layers
 from src.train import train_model
-from src.evaluate import evaluate_model
+from src.evaluate import tts_model, evaluate_model
 from src.inference import text_to_speech
+from src.preprocessing import create_text_vectorizer, load_data, train_texts, test_texts
 
 def main():
     # Step 1: Train the model
     train_model()
     
     # Step 2: Evaluate the model
-    metrics = evaluate_model(
-        model_path="models/best_model.keras",
-        test_texts=test_texts,  # Load your test data here
-        test_mels=test_mels
-    )
+    metrics = evaluate_model(tts_model, test_texts, test_mels, text_vectorizer)
     print(f"Evaluation Metrics: MCD={metrics['mcd']:.4f}, RMSE={metrics['rmse']:.4f}")
     
     # Step 3: Generate speech from text
-    text_to_speech(
-        model_path="models/best_model.keras",
-        text="Hello world, this is a text-to-speech example.",
-        output_path="generated_speech.wav"
-    )
-    print("Done! Audio saved to 'generated_speech.wav'")
+    text_to_test = "Hello world, this is a test of text to speech."
+    audio, mel = text_to_speech(tts_model, text_to_test, text_vectorizer)
 
 if __name__ == "__main__":
-    # Add project directory to Python path
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    
-    # Import test data (modify as needed)
-    from src.preprocessing import load_data
-    _, _, test_texts, test_mels = load_data()
-    
+    text_vectorizer = create_text_vectorizer(train_texts + test_texts)
+    _, test_mels, _, _ = load_data()
     main()
+    
